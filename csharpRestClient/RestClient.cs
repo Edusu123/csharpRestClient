@@ -30,13 +30,15 @@ namespace csharpRestClient
         public string MakeRequest()
         {
             string responseValue = string.Empty;
-
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(EndPoint);
+            HttpWebResponse response = null;
 
             request.Method = HttpMethod.ToString();
 
-            using(HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            try
             {
+                response = (HttpWebResponse)request.GetResponse();
+
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
                     throw new ApplicationException("error code: " + response.StatusCode);
@@ -53,6 +55,17 @@ namespace csharpRestClient
                             responseValue = reader.ReadToEnd();
                         }
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                responseValue = "{\"errorMessages\":[\"" + ex.Message.ToString() + "\"],\"errors\":{}}";
+            }
+            finally
+            {
+                if(response != null)
+                {
+                    ((IDisposable)response).Dispose();
                 }
             }
 
