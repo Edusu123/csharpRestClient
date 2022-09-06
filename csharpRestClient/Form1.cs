@@ -16,9 +16,7 @@ namespace csharpRestClient
 
             DebugOutput("Rest Client Created");
 
-            string response = string.Empty;
-
-            response = client.MakeRequest();
+            string response = client.MakeRequest();
 
             DebugOutput(response);
         }
