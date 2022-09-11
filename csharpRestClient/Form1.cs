@@ -13,6 +13,10 @@ namespace csharpRestClient
         {
             RestClient client = new RestClient();
             client.EndPoint = txtRestURI.Text;
+            //client.AuthTechnique = AuthenticationTechnique.RollYourOwn;
+            client.AuthType = AuthenticationType.Basic;
+            client.UserName = txtUserName.Text;
+            client.Password = txtPassword.Text;
 
             DebugOutput("Rest Client Created");
 

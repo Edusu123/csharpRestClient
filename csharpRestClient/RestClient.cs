@@ -1,7 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.Text;
 using System.Net;
-using System.Text;
 
 namespace csharpRestClient
 {
@@ -13,16 +11,34 @@ namespace csharpRestClient
         DELETE
     }
 
+    public enum AuthenticationType
+    {
+        Basic,
+        NTLM
+    }
+
+    public enum AuthenticationTechnique
+    {
+        RollYourOwn,
+        NetworkCredential
+    }
+
     internal class RestClient
     {
         public string EndPoint { get; set; }
 
         public HttpVerb HttpMethod { get; set; }
 
+        public AuthenticationType AuthType { get; set; }
+
+        public AuthenticationTechnique AuthTechnique { get; set; }
+
+        public string UserName { get; set; }
+        
+        public string Password{ get; set; }
+
         public RestClient()
         {
-            // https://dry-cliffs-19849.herokuapp.com/users.json
-
             EndPoint = string.Empty;
             HttpMethod = HttpVerb.GET;
         }
@@ -33,7 +49,10 @@ namespace csharpRestClient
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(EndPoint);
             HttpWebResponse response = null;
 
+            string authHeader = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{UserName}:{Password}"));
+
             request.Method = HttpMethod.ToString();
+            request.Headers.Add("Authorization", AuthType.ToString() + " " + authHeader);
 
             try
             {
